@@ -1,14 +1,24 @@
 class Platform {
-  constructor(x, y) {
+  constructor(x, y, type) {
     this.x = x; // Horizontal position
     this.y = y; //vertical position
     this.w = 60; // width
     this.h = 10; // height
+    this.type = type;  //"normal" or "breaking"
+    this.broken = false; // starts as not broken becomes true once bounced
   }
 
   draw() {
-    fill(0, 200, 0); // green
-    rect(this.x, this.y, this.w, this.h);
+    if (this.type === "breaking" && this.broken) { //does not regenerete platform if broken
+      return; //stops the function
+    }
+    if (this.type === "breaking") { 
+      fill (200, 0, 0); // breaking platform red
+    } else {
+      fill (0, 200, 0); //normal platform green
+    }
+    
+    rect(this.x, this.y, this.w, this.h); //player
   }
 }
 
@@ -18,19 +28,20 @@ let playerVy = 30; // vertical speed
 let gravity = 0.4;
 let jumpForce = -10; // jumping force
 let moveSpeed = 6; // How fast vertical movement is
-let testPlatform;
 let platforms = []; //array
 
 function setup() {
   createCanvas(400, 600);
-  for (let i = 0; i < 5; i++) {
-    //loop
-    let x = random(0, 340); // random horizontal position
-    let y = 170 + i * 100; // spaced vertically 100 space between every platform
-    platforms.push(new Platform(x, y)); //push into array
-  }
-}
 
+  //Generating platforms 
+  for (let i = 0; i < 5; i++) { 
+let x = random(0, 340); // random horizontal position
+let y = 170 + i * 100; // spaced vertically 100 space between every platform
+let type = random(1) < 0.3 ? "breaking" : "normal"; //randomly choose type breaking or normal
+platforms.push(new Platform(x, y, type)); //push into array
+}
+}
+ 
 function draw() {
   background(135, 200, 230);
 
@@ -46,7 +57,10 @@ function draw() {
   for (let p of platforms) {
     p.draw();
   }
-  for (let p of platforms) {
+  for (let p of platforms) { //check all platforms in array
+    if (p.type === "breaking" && p.broken){//if platform breaking and broken check new
+      continue;
+    }
     if (playerVy > 0) {
       //bounce only when falling down
 
@@ -57,6 +71,9 @@ function draw() {
       if (touchingX && touchingY) {
         //if both are true, bounce
         playerVy = jumpForce;
+      if(p.type === "breaking"){ //breaking platforms should disapear
+        p.broken = true; //marks the platform as true so it doesnt get redrawn
+      }
       }
     }
   }
