@@ -23,13 +23,14 @@ class Platform {
   }
 }
 
-let playerY = 560; // vertical position
+let playerY = 150; // vertical position
 let playerX = 180; // Horizontal position
-let playerVy = 30; // vertical speed
+let playerVy = 5; // vertical speed
 let gravity = 0.4;
 let jumpForce = -10; // jumping force
 let moveSpeed = 6; // How fast vertical movement is
 let platforms = []; //array
+let gameover = false;
 
 function setup() {
   createCanvas(400, 600);
@@ -46,6 +47,13 @@ function setup() {
 function draw() {
   background(135, 200, 230);
 
+  if (gameover) {
+    fill(0, 200, 0);
+    fill(0, 0, 0);
+    text("press enter to start again", 150, 400);
+    text("game over", 150, 300);
+    return;
+  }
   playerVy += gravity; //gravity applied
   playerY += playerVy;
 
@@ -106,7 +114,24 @@ function draw() {
   rect(playerX, playerY, 44, 40); //player character
 
   if (playerY > 560) {
-    playerY = 560; // player start on floor
-    playerVy = jumpForce;
+    gameover = true;
+  }
+}
+function keyPressed() {
+  if (keyCode === 13) {
+    // 13 = ENTER key
+    gameover = false; //gets you back to game screen
+
+    playerY = 300; //resets
+    playerX = 180;
+    playerVy = 0;
+
+    platforms = [];
+    for (let i = 0; i < 5; i++) {
+      let x = random(0, 340);
+      let y = 170 + i * 100;
+      let type = random(1) < 0.3 ? "breaking" : "normal";
+      platforms.push(new Platform(x, y, type));
+    }
   }
 }
