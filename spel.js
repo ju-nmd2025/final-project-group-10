@@ -31,6 +31,7 @@ let jumpForce = -10; // jumping force
 let moveSpeed = 6; // How fast vertical movement is
 let platforms = []; //array
 let gameover = false;
+let gamestart = true;
 
 function setup() {
   createCanvas(400, 600);
@@ -46,6 +47,12 @@ function setup() {
 
 function draw() {
   background(135, 200, 230);
+if (gamestart) {
+  fill (0);
+  textSize (20);
+  text ("Press space to start",100, 300);
+  return;
+}
 
   if (gameover) {
     fill(0, 200, 0);
@@ -121,6 +128,22 @@ function keyPressed() {
   if (keyCode === 13) {
     // 13 = ENTER key
     gameover = false; //gets you back to game screen
+
+    playerY = 300; //resets
+    playerX = 180;
+    playerVy = 0;
+
+    platforms = [];
+    for (let i = 0; i < 5; i++) {
+      let x = random(0, 340);
+      let y = 170 + i * 100;
+      let type = random(1) < 0.3 ? "breaking" : "normal";
+      platforms.push(new Platform(x, y, type));
+    }
+  }
+  if (keyCode === 32) {
+    // 32 = space key
+    gamestart = false; //moves you from startscreen to game
 
     playerY = 300; //resets
     playerX = 180;
