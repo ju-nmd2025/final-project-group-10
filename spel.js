@@ -6,19 +6,29 @@ class Platform {
     this.h = 10; // height
     this.type = type; //"normal" or "breaking"
     this.broken = false; // starts as not broken becomes true once bounced
+    this.direction = 1;
+    this.speed = 2;
   }
 
   draw() {
-    if (this.type === "breaking" && this.broken) {
+    if (this.type === "breaking" && this.broken) 
       //does not regenerete platform if broken
       return; //stops the function
-    }
-    if (this.type === "breaking") {
+    
+    if (this.type === "breaking")
       fill(200, 0, 0); // breaking platform red
-    } else {
+    else if (this.type === "moving")
+      fill (0, 0, 200);
+    else
       fill(0, 200, 0); //normal platform green
+    
+    if (this.type === "moving") { 
+      this.x += this.direction * this.speed; // calculates speed and direction
+      if (this.x < -60 || this.x > 400) { 
+        this.direction *= -1; // if platform is at the edge of tghe screen it changes direction
+      }
     }
-
+    
     rect(this.x, this.y, this.w, this.h); //player
   }
 }
@@ -40,9 +50,12 @@ function setup() {
   for (let i = 0; i < 5; i++) {
     let x = random(0, 340); // random horizontal position
     let y = 170 + i * 100; // spaced vertically 100 space between every platform
-    let type = random(1) < 0.3 ? "breaking" : "normal"; //randomly choose type breaking or normal
-    platforms.push(new Platform(x, y, type)); //push into array
-  }
+   let r = random (1); // 
+   let type = "normal";
+   if (r < 0.2) type = "breaking"; // 0.0 to 0.2 (20% breaking)
+   else if (r < 0.4) type = "moving"; // 0.2 to 0.4 (20% moving)
+   platforms.push(new Platform (x, y, type));
+   }
 }
 
 function draw() {
@@ -112,8 +125,11 @@ if (gamestart) {
       for (let p of platforms) if (p.y < highestY) highestY = p.y; //loop through platforms and updates highest Y value
       let newX = random(0, 340); //create a new X value to platform
       let newY = highestY - 100; // create a new Y value to platform 100 from highest one
-      let type = random(1) < 0.3 ? "breaking" : "normal"; //make randomly breaking/normal
-      platforms.push(new Platform(newX, newY, type)); //push new platform into array
+       let r = random (1);
+      let type = "normal";
+      if (r < 0.2) type = "breaking";
+      else if (r < 0.4) type = "moving";
+      platforms.push(new Platform (newX, newY, type));
       i--; //go back one step in array so it doesent skip a platform
     }
   }
@@ -137,8 +153,11 @@ function keyPressed() {
     for (let i = 0; i < 5; i++) {
       let x = random(0, 340);
       let y = 170 + i * 100;
-      let type = random(1) < 0.3 ? "breaking" : "normal";
-      platforms.push(new Platform(x, y, type));
+        let r = random (1);
+      let type = "normal";
+      if (r < 0.2) type = "breaking";
+      else if (r < 0.4) type = "moving";
+      platforms.push(new Platform (x, y, type));
     }
   }
   if (keyCode === 32) {
@@ -153,8 +172,11 @@ function keyPressed() {
     for (let i = 0; i < 5; i++) {
       let x = random(0, 340);
       let y = 170 + i * 100;
-      let type = random(1) < 0.3 ? "breaking" : "normal";
-      platforms.push(new Platform(x, y, type));
+       let r = random (1);
+      let type = "normal";
+      if (r < 0.2) type = "breaking";
+      else if (r < 0.4) type = "moving";
+      platforms.push(new Platform (x, y, type));
     }
   }
 }
