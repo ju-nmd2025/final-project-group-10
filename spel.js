@@ -1,3 +1,35 @@
+class Player {
+  constructor() {
+    this.x = 180; //Horizontal position
+    this.y = 150; //Vertical position
+    this.vy = 5; // Vertical speed
+    this.w = 44; // Player width
+    this.h = 40; // Player height
+    this.gravity = 0.4;
+    this.jumpForce = -10; //Height of jump
+    this.moveSpeed = 6; //How fast vertical movement is
+  }
+  move() {
+    this.vy += this.gravity;
+    this.y += this.vy; //Player gravity
+
+    if (keyIsDown(65)) this.x -= this.moveSpeed; // Move left with A key
+    if (keyIsDown(68)) this.x += this.moveSpeed; // Move right with D key
+  }
+  jump() {
+    this.vy = this.jumpForce; //Bounce up
+  }
+  draw() {
+    rect(this.x, this.y, this.w, this.h); //draw player
+  }
+  reset() {
+    // reset postition
+    this.x = 180;
+    this.y = 300;
+    this.vy = 0;
+  }
+}
+
 class Platform {
   constructor(x, y, type) {
     this.x = x; // Horizontal position
@@ -11,61 +43,56 @@ class Platform {
   }
 
   draw() {
-    if (this.type === "breaking" && this.broken) 
+    if (this.type === "breaking" && this.broken)
       //does not regenerete platform if broken
       return; //stops the function
-    
-    if (this.type === "breaking")
-      fill(200, 0, 0); // breaking platform red
-    else if (this.type === "moving")
-      fill (0, 0, 200);
-    else
-      fill(0, 200, 0); //normal platform green
-    
-    if (this.type === "moving") { 
+
+    if (this.type === "breaking") fill(200, 0, 0); // breaking platform red
+    else if (this.type === "moving") fill(0, 0, 200);
+    else fill(0, 200, 0); //normal platform green
+
+    if (this.type === "moving") {
       this.x += this.direction * this.speed; // calculates speed and direction
-      if (this.x < -60 || this.x > 400) { 
+      if (this.x < -60 || this.x > 400) {
         this.direction *= -1; // if platform is at the edge of tghe screen it changes direction
       }
     }
-    
+
     rect(this.x, this.y, this.w, this.h); //player
   }
 }
 
-let playerY = 150; // vertical position
-let playerX = 180; // Horizontal position
-let playerVy = 5; // vertical speed
-let gravity = 0.4;
-let jumpForce = -10; // jumping force
-let moveSpeed = 6; // How fast vertical movement is
-let platforms = []; //array
+let platforms = []; //platform array
 let gameover = false;
 let gamestart = true;
 
 function setup() {
   createCanvas(400, 600);
 
+  player = new Player(); //store player class in variable
+
   //Generating platforms
   for (let i = 0; i < 5; i++) {
     let x = random(0, 340); // random horizontal position
     let y = 170 + i * 100; // spaced vertically 100 space between every platform
-   let r = random (1); // 
-   let type = "normal";
-   if (r < 0.2) type = "breaking"; // 0.0 to 0.2 (20% breaking)
-   else if (r < 0.4) type = "moving"; // 0.2 to 0.4 (20% moving)
-   platforms.push(new Platform (x, y, type));
-   }
+
+    let r = random(1);
+    let type = "normal";
+    if (r < 0.2) type = "breaking"; // 0.0 to 0.2 (20% breaking)
+    else if (r < 0.4) type = "moving"; // 0.2 to 0.4 (20% moving)
+
+    platforms.push(new Platform(x, y, type));
+  }
 }
 
 function draw() {
   background(135, 200, 230);
-if (gamestart) {
-  fill (0);
-  textSize (20);
-  text ("Press space to start",100, 300);
-  return;
-}
+  if (gamestart) {
+    fill(0);
+    textSize(20);
+    text("Press space to start", 100, 300);
+    return;
+  }
 
   if (gameover) {
     fill(0, 200, 0);
@@ -74,34 +101,26 @@ if (gamestart) {
     text("game over", 150, 300);
     return;
   }
-  playerVy += gravity; //gravity applied
-  playerY += playerVy;
+  player.move(); //player movement added
 
-  if (keyIsDown(65)) {
-    playerX -= moveSpeed; // move left
-  }
-  if (keyIsDown(68)) {
-    playerX += moveSpeed; // move right
-  }
-  for (let p of platforms) {
-    p.draw();
-  }
+  for (let p of platforms) p.draw();
+
   for (let p of platforms) {
     //check all platforms in array
     if (p.type === "breaking" && p.broken) {
       //if platform breaking and broken check new
       continue;
     }
-    if (playerVy > 0) {
+    if (player.vy > 0) {
       //bounce only when falling down
 
-      let touchingX = playerX + 44 > p.x && playerX < p.x + p.w; //check if touching platform horizontaly
-
-      let touchingY = playerY + 40 > p.y && playerY + 40 < p.y + p.h; //check if touching platform vertically
+      let touchingX = player.x + player.w > p.x && player.x < p.x + p.w;
+      let touchingY =
+        player.y + player.h > p.y && player.y + player.h < p.y + p.h;
 
       if (touchingX && touchingY) {
-        //if both are true, bounce
-        playerVy = jumpForce;
+        player.jump(); //Auto bounce
+
         if (p.type === "breaking") {
           //breaking platforms should disapear
           p.broken = true; //marks the platform as true so it doesnt get redrawn
@@ -110,9 +129,9 @@ if (gamestart) {
     }
   }
 
-  if (playerY < 250) {
+  if (player.y < 250) {
     let scroll = 4; // how fast everything moves
-    playerY += scroll; //push player down scroll amount
+    player.y += scroll; //push player down scroll amount
     for (let p of platforms) p.y += scroll; //loops through each platform and adds scroll to it
   }
 
@@ -125,18 +144,20 @@ if (gamestart) {
       for (let p of platforms) if (p.y < highestY) highestY = p.y; //loop through platforms and updates highest Y value
       let newX = random(0, 340); //create a new X value to platform
       let newY = highestY - 100; // create a new Y value to platform 100 from highest one
-       let r = random (1);
+
+      let r = random(1);
       let type = "normal";
       if (r < 0.2) type = "breaking";
       else if (r < 0.4) type = "moving";
-      platforms.push(new Platform (newX, newY, type));
+      platforms.push(new Platform(newX, newY, type));
       i--; //go back one step in array so it doesent skip a platform
     }
   }
 
-  rect(playerX, playerY, 44, 40); //player character
+  player.draw();
 
-  if (playerY > 560) {
+  if (player.y > 560) {
+    //if player falls off screen --> gameover
     gameover = true;
   }
 }
@@ -144,39 +165,34 @@ function keyPressed() {
   if (keyCode === 13) {
     // 13 = ENTER key
     gameover = false; //gets you back to game screen
-
-    playerY = 300; //resets
-    playerX = 180;
-    playerVy = 0;
-
+    player.reset(); //reset at starting posistion
     platforms = [];
+
     for (let i = 0; i < 5; i++) {
       let x = random(0, 340);
       let y = 170 + i * 100;
-        let r = random (1);
+
+      let r = random(1);
       let type = "normal";
       if (r < 0.2) type = "breaking";
       else if (r < 0.4) type = "moving";
-      platforms.push(new Platform (x, y, type));
+      platforms.push(new Platform(x, y, type));
     }
   }
   if (keyCode === 32) {
     // 32 = space key
     gamestart = false; //moves you from startscreen to game
-
-    playerY = 300; //resets
-    playerX = 180;
-    playerVy = 0;
-
+    player.reset(); //reset at starting postition
     platforms = [];
     for (let i = 0; i < 5; i++) {
       let x = random(0, 340);
       let y = 170 + i * 100;
-       let r = random (1);
+
+      let r = random(1);
       let type = "normal";
       if (r < 0.2) type = "breaking";
       else if (r < 0.4) type = "moving";
-      platforms.push(new Platform (x, y, type));
+      platforms.push(new Platform(x, y, type));
     }
   }
 }
