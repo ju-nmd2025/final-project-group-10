@@ -201,6 +201,6 @@ function keyIsDown() {
   }
 }
 
-window.addEventListener("keydown", function (event) {
-    keyPressed();
+window.addEventListener("keyIsDown", function (event) {
+    keyIsDown();
 });
