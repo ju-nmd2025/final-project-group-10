@@ -58,7 +58,7 @@ class Platform {
       }
     }
 
-    rect(this.x, this.y, this.w, this.h); //player
+    rect(this.x, this.y, this.w, this.h); //platform
   }
 }
 
@@ -84,7 +84,6 @@ function setup() {
     platforms.push(new Platform(x, y, type));
   }
 }
-window.setup = setup;
 
 function draw() {
   background(135, 200, 230);
@@ -162,10 +161,8 @@ function draw() {
     gameover = true;
   }
 }
-window.draw = draw;
-
-function keyPressed(event) {
-  if (event.keyCode === 13) {
+function keyPressed() {
+  if (keyCode === 13) {
     // 13 = ENTER key
     gameover = false; //gets you back to game screen
     player.reset(); //reset at starting posistion
@@ -182,7 +179,7 @@ function keyPressed(event) {
       platforms.push(new Platform(x, y, type));
     }
   }
-  if (event.keyCode === 32) {
+  if (keyCode === 32) {
     // 32 = space key
     gamestart = false; //moves you from startscreen to game
     player.reset(); //reset at starting postition
@@ -199,7 +196,6 @@ function keyPressed(event) {
     }
   }
 }
-
-window.addEventListener("keydown", function (event) {
-  keyPressed();
-});
+window.setup = setup;
+window.draw = draw;
+window.keyPressed = keyPressed;
