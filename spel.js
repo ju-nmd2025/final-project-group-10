@@ -165,7 +165,7 @@ function draw() {
 window.draw = draw;
 
 function keyPressed(event) {
-  if (keyCode === 13) {
+  if (event.keyCode === 13) {
     // 13 = ENTER key
     gameover = false; //gets you back to game screen
     player.reset(); //reset at starting posistion
@@ -182,7 +182,7 @@ function keyPressed(event) {
       platforms.push(new Platform(x, y, type));
     }
   }
-  if (keyCode === 32) {
+  if (event.keyCode === 32) {
     // 32 = space key
     gamestart = false; //moves you from startscreen to game
     player.reset(); //reset at starting postition
