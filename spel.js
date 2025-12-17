@@ -165,7 +165,7 @@ function draw() {
 }
 window.draw = draw;
 
-function keyPressed() {
+function keyIsDown() {
   if (keyCode === 13) {
     // 13 = ENTER key
     gameover = false; //gets you back to game screen
@@ -200,9 +200,7 @@ function keyPressed() {
     }
   }
 }
-window.addEventListener("click", function (event) {
-    mousePressed();
-});
+
 window.addEventListener("keydown", function (event) {
     keyPressed();
 });
