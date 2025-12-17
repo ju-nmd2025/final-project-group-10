@@ -203,3 +203,4 @@ function keyPressed() {
 window.addEventListener("keydown", function (event) {
     keyPressed();
 });
+document.body.tabIndex = 0;
