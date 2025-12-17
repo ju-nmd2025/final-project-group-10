@@ -196,6 +196,7 @@ function keyPressed() {
     }
   }
 }
+//added this to make pages work
 window.setup = setup;
 window.draw = draw;
 window.keyPressed = keyPressed;
