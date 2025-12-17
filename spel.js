@@ -200,6 +200,9 @@ function keyPressed() {
     }
   }
 }
+window.addEventListener("click", function (event) {
+    mousePressed();
+});
 window.addEventListener("keydown", function (event) {
     keyPressed();
 });
