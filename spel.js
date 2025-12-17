@@ -84,6 +84,8 @@ function setup() {
     platforms.push(new Platform(x, y, type));
   }
 }
+window.setup = setup;
+
 
 function draw() {
   background(135, 200, 230);
@@ -161,6 +163,8 @@ function draw() {
     gameover = true;
   }
 }
+window.draw = draw;
+
 function keyPressed() {
   if (keyCode === 13) {
     // 13 = ENTER key
@@ -196,3 +200,6 @@ function keyPressed() {
     }
   }
 }
+window.addEventListener("keydown", function (event) {
+    keyPressed();
+});
