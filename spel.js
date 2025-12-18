@@ -198,13 +198,5 @@ function keyPressed() {
 }
 //added this to make pages work
 window.setup = setup;
-
 window.draw = draw;
-
-window.addEventListener("click", function (event) {
-  mousePressed();
-});
-
-window.addEventListener("keydown", function (event) {
-  keyPressed();
-});
+window.keyPressed = keyPressed;
